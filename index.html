@@ -126,7 +126,7 @@ function renderProduk(data) {
         <p class="card-text flex-grow-1">${item.deskripsi}</p>
         <p class="fw-bold">Rp ${item.harga}</p>
         <button class="btn btn-outline-primary btn-sm" onclick='tambahKeranjang(${JSON.stringify(item)})'><i class="bi bi-cart-plus"></i> Tambah</button>
-        <a href="${item.link_wa}" class="btn btn-wa btn-sm mt-2" target="_blank"><i class="bi bi-whatsapp"></i> Pesan</a>
+        <a href="${item.link_wa}" class="btn btn-wa btn-sm mt-2" target="_blank"><i class="bi bi-whatsapp"></i> Pesan Langsung</a>
         <div class="mt-2">
           <iframe src="https://www.google.com/maps?q=${item.lokasi_maps}&output=embed" width="100%" height="150" style="border:0;"></iframe>
         </div>
