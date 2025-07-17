@@ -21,9 +21,30 @@
     .card.list-view img { width: 150px; height: 100%; object-fit: cover; }
     .card.list-view .card-body { flex: 1; }
     #keranjang-modal .modal-body { max-height: 400px; overflow-y: auto; }
+    #floating-cart {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+    #notif {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1051;
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+<div id="notif" class="alert alert-success">Produk ditambahkan ke keranjang!</div>
+<div id="floating-cart">
+  <button class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#keranjang-modal">
+    <i class="bi bi-cart"></i>
+    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+  </button>
+</div>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container">
@@ -34,7 +55,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="#produk">Produk</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#keranjang-modal">Keranjang</a></li>
       </ul>
     </div>
   </div>
@@ -117,21 +137,45 @@ function renderProduk(data) {
 }
 
 function tambahKeranjang(item) {
-  keranjang.push(item);
+  const existing = keranjang.find(p => p.nama_produk === item.nama_produk);
+  if (existing) existing.qty += 1;
+  else keranjang.push({...item, qty: 1});
   updateKeranjang();
+  showNotif();
+}
+
+function showNotif() {
+  const notif = document.getElementById('notif');
+  notif.style.display = 'block';
+  setTimeout(() => notif.style.display = 'none', 2000);
 }
 
 function updateKeranjang() {
   const list = document.getElementById('keranjang-list');
   list.innerHTML = '';
-  keranjang.forEach(item => {
+  keranjang.forEach((item, index) => {
     const li = document.createElement('li');
-    li.className = 'list-group-item';
-    li.textContent = `${item.nama_produk} - Rp ${item.harga}`;
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.innerHTML = `
+      ${item.nama_produk} (Rp ${item.harga})
+      <div>
+        <button class="btn btn-sm btn-outline-secondary" onclick="ubahQty(${index}, -1)">-</button>
+        <span class="mx-2">${item.qty}</span>
+        <button class="btn btn-sm btn-outline-secondary" onclick="ubahQty(${index}, 1)">+</button>
+      </div>`;
     list.appendChild(li);
   });
-  const link = 'https://wa.me/6281234567890?text=' + encodeURIComponent(keranjang.map(p => `- ${p.nama_produk} (${p.harga})`).join('\n'));
+  document.getElementById('cart-count').textContent = keranjang.reduce((a, b) => a + b.qty, 0);
+  const link = 'https://wa.me/6281234567890?text=' + encodeURIComponent(
+    keranjang.map(p => `- ${p.nama_produk} (${p.harga}) x${p.qty}`).join('\n')
+  );
   document.getElementById('pesan-semua').href = link;
+}
+
+function ubahQty(index, delta) {
+  keranjang[index].qty += delta;
+  if (keranjang[index].qty <= 0) keranjang.splice(index, 1);
+  updateKeranjang();
 }
 
 function applyPengaturan(configs) {
