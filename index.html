@@ -38,7 +38,10 @@
 </head>
 <body>
 
+<!-- Notifikasi Tambah Produk -->
 <div id="notif" class="alert alert-success">Produk ditambahkan ke keranjang!</div>
+
+<!-- Tombol Keranjang Melayang -->
 <div id="floating-cart">
   <button class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#keranjang-modal">
     <i class="bi bi-cart"></i>
@@ -46,6 +49,7 @@
   </button>
 </div>
 
+<!-- Navigasi -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container">
     <a class="navbar-brand" href="#">UMKM Garut</a>
@@ -54,16 +58,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
         <li class="nav-item"><a class="nav-link" href="#produk">Produk</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
+<!-- Header / Hero -->
 <header class="bg-light text-center py-5">
   <div class="container">
-    <h1 class="display-4">Temukan Produk Lokal Berkualitas</h1>
-    <p class="lead">Langsung dari pelaku UMKM Garut</p>
+    <h1 class="display-4" id="judul-utama">Temukan Produk Lokal Berkualitas</h1>
+    <p class="lead" id="deskripsi-utama">Langsung dari pelaku UMKM Garut</p>
     <div class="d-flex justify-content-center gap-2">
       <button class="btn btn-outline-primary btn-grid"><i class="bi bi-grid"></i> Grid</button>
       <button class="btn btn-outline-secondary btn-list"><i class="bi bi-list"></i> List</button>
@@ -71,6 +77,29 @@
   </div>
 </header>
 
+<!-- Tentang UMKM -->
+<section id="tentang" class="py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h2>Tentang Kami</h2>
+        <p id="tentang-umkm"></p>
+        <p><i class="bi bi-geo-alt"></i> <span id="alamat-umkm"></span></p>
+        <p><i class="bi bi-clock"></i> <span id="jam-operasional"></span></p>
+        <p>
+          <a href="#" id="link-wa"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" id="link-ig" class="ms-2"><i class="bi bi-instagram"></i></a>
+          <a href="#" id="link-fb" class="ms-2"><i class="bi bi-facebook"></i></a>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <iframe id="map-embed" width="100%" height="300" style="border:0;" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Daftar Produk -->
 <section id="produk" class="py-5">
   <div class="container">
     <div id="produk-container" class="row g-4"></div>
@@ -96,18 +125,19 @@
 </div>
 
 <script>
-const sheetId = '1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w';
-const apiKey = 'AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc';
+const sheetId = 'PASTE_ID_SHEET_KAMU';
+const apiKey = 'PASTE_API_KEY_KAMU';
 const sheetProduk = 'Produk';
 const sheetPengaturan = 'Pengaturan';
+const sheetProfil = 'ProfilUMKM';
 let keranjang = [];
 
 function fetchSheet(sheetName) {
   return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`)
     .then(res => res.json())
     .then(data => {
-      const [header,...rows] = data.values;
-      return rows.map(row => Object.fromEntries(header.map((h,i) => [h,row[i]||''])));
+      const [header, ...rows] = data.values;
+      return rows.map(row => Object.fromEntries(header.map((h, i) => [h, row[i] || ''])));
     });
 }
 
@@ -127,19 +157,29 @@ function renderProduk(data) {
         <p class="fw-bold">Rp ${item.harga}</p>
         <button class="btn btn-outline-primary btn-sm" onclick='tambahKeranjang(${JSON.stringify(item)})'><i class="bi bi-cart-plus"></i> Tambah</button>
         <a href="${item.link_wa}" class="btn btn-wa btn-sm mt-2" target="_blank"><i class="bi bi-whatsapp"></i> Pesan Langsung</a>
-        <div class="mt-2">
-          <iframe src="https://www.google.com/maps?q=${item.lokasi_maps}&output=embed" width="100%" height="150" style="border:0;"></iframe>
-        </div>
       </div>`;
     col.appendChild(card);
     container.appendChild(col);
   });
 }
 
+function renderProfil(data) {
+  const p = data[0];
+  document.getElementById('judul-utama').textContent = p.judul_utama;
+  document.getElementById('deskripsi-utama').textContent = p.deskripsi;
+  document.getElementById('tentang-umkm').textContent = p.tentang;
+  document.getElementById('alamat-umkm').textContent = p.alamat;
+  document.getElementById('jam-operasional').textContent = p.jam_operasional;
+  document.getElementById('map-embed').src = `https://www.google.com/maps?q=${p.lokasi_maps}&output=embed`;
+  document.getElementById('link-wa').href = `https://wa.me/${p.no_wa}`;
+  document.getElementById('link-ig').href = p.link_ig;
+  document.getElementById('link-fb').href = p.link_fb;
+}
+
 function tambahKeranjang(item) {
   const existing = keranjang.find(p => p.nama_produk === item.nama_produk);
   if (existing) existing.qty += 1;
-  else keranjang.push({...item, qty: 1});
+  else keranjang.push({ ...item, qty: 1 });
   updateKeranjang();
   showNotif();
 }
@@ -178,30 +218,15 @@ function ubahQty(index, delta) {
   updateKeranjang();
 }
 
-function applyPengaturan(configs) {
-  const map = Object.fromEntries(configs.map(c => [c.konfigurasi, c.nilai]));
-  document.documentElement.style.setProperty('--primary-color', map['warna_primary'] || '#007bff');
-  document.documentElement.style.setProperty('--background-color', map['warna_background'] || '#f8f9fa');
-  const container = document.getElementById('produk-container');
-  if (map['tampilan'] === 'list') container.classList.add('list');
-  else container.classList.remove('list');
-}
-
-document.querySelector('.btn-grid').onclick = () => {
-  document.getElementById('produk-container').classList.remove('list');
-};
-
-document.querySelector('.btn-list').onclick = () => {
-  document.getElementById('produk-container').classList.add('list');
-};
-
-Promise.all([fetchSheet(sheetProduk), fetchSheet(sheetPengaturan)])
-  .then(([produk, pengaturan]) => {
-    renderProduk(produk);
-    applyPengaturan(pengaturan);
-  });
+Promise.all([
+  fetchSheet(sheetProduk),
+  fetchSheet(sheetPengaturan),
+  fetchSheet(sheetProfil)
+]).then(([produk, pengaturan, profil]) => {
+  renderProduk(produk);
+  renderProfil(profil);
+});
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
