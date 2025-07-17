@@ -2,61 +2,162 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Produk UMKM Garut</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMKM Garut - Landing Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 20px; background: #f2f2f2; }
-    .produk { background: #fff; margin-bottom: 20px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .produk img { max-width: 100%; border-radius: 8px; }
-    .map { height: 300px; margin-top: 10px; border-radius: 10px; }
-    .wa-btn { background: #25D366; color: white; padding: 10px 20px; display: inline-block; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+    :root {
+      --primary-color: #007bff;
+      --background-color: #f8f9fa;
+      --card-view: block;
+    }
+    body { background: var(--background-color); }
+    .navbar { position: sticky; top: 0; z-index: 1000; }
+    .card-img-top { height: 200px; object-fit: cover; }
+    .btn-wa { background: #25D366; color: white; }
+    .btn-grid, .btn-list { cursor: pointer; }
+    .card.list-view { flex-direction: row; }
+    .card.list-view img { width: 150px; height: 100%; object-fit: cover; }
+    .card.list-view .card-body { flex: 1; }
+    #keranjang-modal .modal-body { max-height: 400px; overflow-y: auto; }
   </style>
 </head>
 <body>
 
-<h1>Produk Unggulan UMKM Garut</h1>
-<div id="produk-container">Memuat data produk...</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="#">UMKM Garut</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#produk">Produk</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#keranjang-modal">Keranjang</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="bg-light text-center py-5">
+  <div class="container">
+    <h1 class="display-4">Temukan Produk Lokal Berkualitas</h1>
+    <p class="lead">Langsung dari pelaku UMKM Garut</p>
+    <div class="d-flex justify-content-center gap-2">
+      <button class="btn btn-outline-primary btn-grid"><i class="bi bi-grid"></i> Grid</button>
+      <button class="btn btn-outline-secondary btn-list"><i class="bi bi-list"></i> List</button>
+    </div>
+  </div>
+</header>
+
+<section id="produk" class="py-5">
+  <div class="container">
+    <div id="produk-container" class="row g-4"></div>
+  </div>
+</section>
+
+<!-- Modal Keranjang -->
+<div class="modal fade" id="keranjang-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Review Pesanan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul id="keranjang-list" class="list-group"></ul>
+      </div>
+      <div class="modal-footer">
+        <a id="pesan-semua" class="btn btn-success" target="_blank">Pesan via WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-  const sheetId = '1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w';
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/produk?key=AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc`;
+const sheetId = '1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w';
+const apiKey = 'AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc';
+const sheetProduk = 'Produk';
+const sheetPengaturan = 'Pengaturan';
+let keranjang = [];
 
-  fetch(url)
+function fetchSheet(sheetName) {
+  return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`)
     .then(res => res.json())
     .then(data => {
-      const rows = data.values;
-      const headers = rows[0];
-      const items = rows.slice(1);
-      const container = document.getElementById('produk-container');
-      container.innerHTML = '';
-
-      items.forEach(row => {
-        const obj = {};
-        headers.forEach((h, i) => obj[h] = row[i]);
-
-        const produkDiv = document.createElement('div');
-        produkDiv.className = 'produk';
-        produkDiv.innerHTML = `
-          <h2>${obj.nama_produk}</h2>
-          <img src="${obj.gambar_url}" alt="${obj.nama_produk}">
-          <p>${obj.deskripsi}</p>
-          <p><strong>Rp ${obj.harga}</strong></p>
-          <a class="wa-btn" href="${obj.link_wa}" target="_blank">Pesan via WhatsApp</a>
-          <div class="map">
-            <iframe
-              width="100%"
-              height="300"
-              frameborder="0"
-              style="border:0"
-              src="https://www.google.com/maps?q=${obj.lokasi_maps}&output=embed"
-              allowfullscreen>
-            </iframe>
-          </div>
-        `;
-        container.appendChild(produkDiv);
-      });
+      const [header,...rows] = data.values;
+      return rows.map(row => Object.fromEntries(header.map((h,i) => [h,row[i]||''])));
     });
+}
+
+function renderProduk(data) {
+  const container = document.getElementById('produk-container');
+  container.innerHTML = '';
+  data.forEach((item, index) => {
+    const col = document.createElement('div');
+    col.className = 'col-md-4';
+    const card = document.createElement('div');
+    card.className = 'card h-100 shadow-sm';
+    card.innerHTML = `
+      <img src="${item.gambar_url}" class="card-img-top" alt="${item.nama_produk}">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">${item.nama_produk}</h5>
+        <p class="card-text flex-grow-1">${item.deskripsi}</p>
+        <p class="fw-bold">Rp ${item.harga}</p>
+        <button class="btn btn-outline-primary btn-sm" onclick='tambahKeranjang(${JSON.stringify(item)})'><i class="bi bi-cart-plus"></i> Tambah</button>
+        <a href="${item.link_wa}" class="btn btn-wa btn-sm mt-2" target="_blank"><i class="bi bi-whatsapp"></i> Pesan</a>
+        <div class="mt-2">
+          <iframe src="https://www.google.com/maps?q=${item.lokasi_maps}&output=embed" width="100%" height="150" style="border:0;"></iframe>
+        </div>
+      </div>`;
+    col.appendChild(card);
+    container.appendChild(col);
+  });
+}
+
+function tambahKeranjang(item) {
+  keranjang.push(item);
+  updateKeranjang();
+}
+
+function updateKeranjang() {
+  const list = document.getElementById('keranjang-list');
+  list.innerHTML = '';
+  keranjang.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item';
+    li.textContent = `${item.nama_produk} - Rp ${item.harga}`;
+    list.appendChild(li);
+  });
+  const link = 'https://wa.me/6281234567890?text=' + encodeURIComponent(keranjang.map(p => `- ${p.nama_produk} (${p.harga})`).join('\n'));
+  document.getElementById('pesan-semua').href = link;
+}
+
+function applyPengaturan(configs) {
+  const map = Object.fromEntries(configs.map(c => [c.konfigurasi, c.nilai]));
+  document.documentElement.style.setProperty('--primary-color', map['warna_primary'] || '#007bff');
+  document.documentElement.style.setProperty('--background-color', map['warna_background'] || '#f8f9fa');
+  const container = document.getElementById('produk-container');
+  if (map['tampilan'] === 'list') container.classList.add('list');
+  else container.classList.remove('list');
+}
+
+document.querySelector('.btn-grid').onclick = () => {
+  document.getElementById('produk-container').classList.remove('list');
+};
+
+document.querySelector('.btn-list').onclick = () => {
+  document.getElementById('produk-container').classList.add('list');
+};
+
+Promise.all([fetchSheet(sheetProduk), fetchSheet(sheetPengaturan)])
+  .then(([produk, pengaturan]) => {
+    renderProduk(produk);
+    applyPengaturan(pengaturan);
+  });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
