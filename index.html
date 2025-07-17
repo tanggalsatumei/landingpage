@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Produk UMKM Garut</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 20px; background: #f2f2f2; }
+    .produk { background: #fff; margin-bottom: 20px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .produk img { max-width: 100%; border-radius: 8px; }
+    .map { height: 300px; margin-top: 10px; border-radius: 10px; }
+    .wa-btn { background: #25D366; color: white; padding: 10px 20px; display: inline-block; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h1>Produk Unggulan UMKM Garut</h1>
+<div id="produk-container">Memuat data produk...</div>
+
+<script>
+  const sheetId = '1s5PwpQqnaqRJ7DeS8rVZ1KiK';
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const rows = data.values;
+      const headers = rows[0];
+      const items = rows.slice(1);
+      const container = document.getElementById('produk-container');
+      container.innerHTML = '';
+
+      items.forEach(row => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = row[i]);
+
+        const produkDiv = document.createElement('div');
+        produkDiv.className = 'produk';
+        produkDiv.innerHTML = `
+          <h2>${obj.nama_produk}</h2>
+          <img src="${obj.gambar_url}" alt="${obj.nama_produk}">
+          <p>${obj.deskripsi}</p>
+          <p><strong>Rp ${obj.harga}</strong></p>
+          <a class="wa-btn" href="${obj.link_wa}" target="_blank">Pesan via WhatsApp</a>
+          <div class="map">
+            <iframe
+              width="100%"
+              height="300"
+              frameborder="0"
+              style="border:0"
+              src="https://www.google.com/maps?q=${obj.lokasi_maps}&output=embed"
+              allowfullscreen>
+            </iframe>
+          </div>
+        `;
+        container.appendChild(produkDiv);
+      });
+    });
+</script>
+
+</body>
+</html>
