@@ -54,6 +54,13 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Lokasi User -->
+<ul class="container text-center mb-3">
+  <small id="lokasi-user" class="text-muted">Mendeteksi lokasi Anda...</small>
+</ul>
+      <ul class="text-center mt-3">
+      <input type="text" id="searchBox" class="form-control w-50 mx-auto" placeholder="Cari produk...">
+    </ul>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
         <li class="nav-item"><a class="nav-link" href="#produk">Produk</a></li>
@@ -85,16 +92,11 @@
       <button class="btn btn-outline-primary btn-grid"><i class="bi bi-grid"></i> Grid</button>
       <button class="btn btn-outline-secondary btn-list"><i class="bi bi-list"></i> List</button>
     </div>
-    <div class="text-center mt-3">
-      <input type="text" id="searchBox" class="form-control w-50 mx-auto" placeholder="Cari produk...">
-    </div>
+    
   </div>
 </header>
 
-<!-- Lokasi User -->
-<div class="container text-center mb-3">
-  <small id="lokasi-user" class="text-muted">Mendeteksi lokasi Anda...</small>
-</div>
+
 
 <script>
   if ('geolocation' in navigator) {
