@@ -97,7 +97,7 @@
     navigator.geolocation.getCurrentPosition(function(pos) {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
-      fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=f52bc7068ca24d6e8545cd9b2b0c0e6e`)
+      fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=YOUR_OPENCAGE_API_KEY`)
         .then(res => res.json())
         .then(data => {
           const lokasi = data.results[0].components;
