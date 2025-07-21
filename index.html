@@ -118,7 +118,7 @@
 <script>
   // Ambil slider dari spreadsheet
   const sheetSlider = 'Slider'; // Buat sheet baru bernama 'Slider' dengan kolom 'gambar_url'
-  fetch(`https://sheets.googleapis.com/v4/spreadsheets/1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w/values/${sheetSlider}?key=f52bc7068ca24d6e8545cd9b2b0c0e6e`)
+  fetch(`https://sheets.googleapis.com/v4/spreadsheets/1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w/values/${sheetSlider}?key=AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc`)
     .then(res => res.json())
     .then(data => {
       const [header, ...rows] = data.values;
@@ -145,34 +145,6 @@
     <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
   </button>
 </div>
-
-<!-- Navigasi -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-  <div class="container">
-    <a class="navbar-brand" href="#">UMKM Garut</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
-        <li class="nav-item"><a class="nav-link" href="#produk">Produk</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- Header / Hero -->
-<header class="bg-light text-center py-5">
-  <div class="container">
-    <h1 class="display-4" id="judul-utama">Temukan Produk Lokal Berkualitas</h1>
-    <p class="lead" id="deskripsi-utama">Langsung dari pelaku UMKM Garut</p>
-    <div class="d-flex justify-content-center gap-2">
-      <button class="btn btn-outline-primary btn-grid"><i class="bi bi-grid"></i> Grid</button>
-      <button class="btn btn-outline-secondary btn-list"><i class="bi bi-list"></i> List</button>
-    </div>
-  </div>
-</header>
 
 <!-- Daftar Produk -->
 <section id="produk" class="py-5">
