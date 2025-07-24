@@ -1,302 +1,52 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>UMKM Garut - Promo & Landing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: #007bff;
-      --background-color: #f8f9fa;
-    }
-    body { background: var(--background-color); }
-    .navbar { position: sticky; top: 0; z-index: 1000; }
-    .card-img-top { height: 200px; object-fit: cover; }
-    .btn-wa { background: #25D366; color: white; }
-    .card.list-view { flex-direction: row; }
-    .card.list-view img { width: 150px; height: 100%; object-fit: cover; }
-    .card.list-view .card-body { flex: 1; }
-    #keranjang-modal .modal-body { max-height: 400px; overflow-y: auto; }
-    #floating-cart {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1050;
-    }
-    #notif {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1051;
-      display: none;
-    }
-    footer { background: #f1f1f1; padding: 20px 0; }
-    .badge-promo { background-color: red; color: white; font-size: 0.75rem; margin-left: 5px; }
-    .nav-location { font-size: 0.875rem; color: #666; }
-    #searchBox { max-width: 200px; }
-  </style>
-</head>
-<body>
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8">
+<title>UMKM Garut – Promo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="css/styles.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head><body>
 
-<!-- Notifikasi dan Floating Cart -->
-<div id="notif" class="alert alert-success">Produk ditambahkan ke keranjang!</div>
-<div id="floating-cart">
-  <button class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#keranjang-modal">
-    <i class="bi bi-cart"></i>
-    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-  </button>
-</div>
+<div class="alert-promo text-center">🚨 Diskon s/d 60% Hari Ini! <a href="#produk">Lihat produk</a></div>
 
-<!-- Banner Promo -->
-<div class="alert alert-danger text-center rounded-0" role="alert">
-  🚨 Diskon s/d 60% Hari Ini! <a href="#produk" class="alert-link">Lihat produk</a>
-</div>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-  <div class="container">
-    <a class="navbar-brand" href="#">UMKM Garut</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
+<nav class="navbar navbar-expand-lg"><div class="container d-flex align-items-center">
+  <a class="navbar-brand" href="#">UMKM Garut</a>
+  <div class="ms-auto d-flex align-items-center">
+    <span id="lokasi-user" class="nav-location">Mendeteksi lokasi...</span>
+    <input id="searchBox" class="form-control" placeholder="Cari produk...">
+    <button class="btn btn-primary ms-3 position-relative" data-bs-toggle="modal" data-bs-target="#keranjang-modal">
+      <i class="bi bi-cart"></i><span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
-        <li class="nav-item"><a class="nav-link" href="#produk">Produk</a></li>
-        <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
-      </ul>
-      <span id="lokasi-user" class="nav-location me-3">Mendeteksi lokasi Anda...</span>
-      <input type="text" id="searchBox" class="form-control" placeholder="Cari produk...">
-    </div>
   </div>
-</nav>
+</div></nav>
 
-<!-- Hero Section dengan Slider -->
-<header class="bg-light py-4">
+<header class="bg-light py-3">
   <div class="container">
-    <div id="carouselHero" class="carousel slide mb-3" data-bs-ride="carousel">
+    <div id="carouselHero" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner" id="slider-images">
-        <div class="carousel-item active">
-          <img src="https://via.placeholder.com/1200x400?text=Loading..." class="d-block w-100" alt="...">
-        </div>
+        <div class="carousel-item active"><img src="https://via.placeholder.com/1200x400?text=Loading..." class="d-block w-100"></div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselHero" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselHero" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-      </button>
-    </div>
-    <h1 class="text-center display-4" id="judul-utama">Temukan Produk Lokal Berkualitas</h1>
-    <p class="text-center lead" id="deskripsi-utama">Langsung dari pelaku UMKM Garut</p>
-    <div class="text-center">
-      <button class="btn btn-outline-primary btn-grid"><i class="bi bi-grid"></i> Grid</button>
-      <button class="btn btn-outline-secondary btn-list"><i class="bi bi-list"></i> List</button>
     </div>
   </div>
 </header>
 
-<!-- Bagian Produk -->
-<section id="produk" class="py-4">
-  <div class="container">
-    <div class="row" id="produk-container"></div>
-  </div>
-</section>
-
-<!-- Tentang UMKM -->
-<section id="tentang" class="py-5">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <h2>Tentang Kami</h2>
-        <p id="tentang-umkm"></p>
-        <p><i class="bi bi-geo-alt"></i> <span id="alamat-umkm"></span></p>
-        <p><i class="bi bi-clock"></i> <span id="jam-operasional"></span></p>
-        <p>
-          <a href="#" id="link-wa"><i class="bi bi-whatsapp"></i></a>
-          <a href="#" id="link-ig" class="ms-2"><i class="bi bi-instagram"></i></a>
-          <a href="#" id="link-fb" class="ms-2"><i class="bi bi-facebook"></i></a>
-        </p>
-      </div>
-      <div class="col-md-6">
-        <iframe id="map-embed" width="100%" height="300" style="border:0;" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Modal Keranjang -->
-<div class="modal fade" id="keranjang-modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Review Pesanan</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <ul id="keranjang-list" class="list-group"></ul>
-      </div>
-      <div class="modal-footer">
-        <a id="pesan-semua" class="btn btn-success" target="_blank">Pesan via WhatsApp</a>
-      </div>
-    </div>
+<div class="container py-3">
+  <h5>Kumpul sini yang nyari promo~</h5>
+  <div class="d-flex flex-wrap gap-2">
+    <button class="btn btn-success promo-btn" data-filter="diskon60">Hemat s.d.60%</button>
+    <button class="btn btn-warning promo-btn" data-filter="min40">Min order s.d.40rb</button>
+    <button class="btn btn-info promo-btn" data-filter="gratisongkir">Gratis Ongkir</button>
   </div>
 </div>
 
-<!-- Script Penggabungan dan Fungsi -->
+<section id="produk" class="pb-5"><div class="container"><div class="row" id="produk-container"></div></div></section>
+
+<!-- Modal Keranjang -->
+<div class="modal fade" id="keranjang-modal" tabindex="-1"><div class="modal-dialog">
+  <div class="modal-content"><div class="modal-header"><h5>Keranjang</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><ul id="keranjang-list" class="list-group"></ul></div>
+    <div class="modal-footer"><a id="pesan-semua" class="btn btn-success w-100" target="_blank">Pesan WA</a></div>
+  </div></div></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-const sheetId = '1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w';
-const apiKey = 'AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc';
-const sheetProduk = 'Produk';
-const sheetProfil = 'ProfilUMKM';
-const sheetSlider = 'Slider';
-let keranjang = [];
-
-// Ambil data dari Google Sheets
-function fetchSheet(sheetName) {
-  return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`)
-    .then(res => res.json())
-    .then(data => {
-      const [header, ...rows] = data.values;
-      return rows.map(row => Object.fromEntries(header.map((h, i) => [h, row[i] || ''])));
-    });
-}
-
-// Render Produk
-function renderProduk(data) {
-  const container = document.getElementById('produk-container');
-  container.innerHTML = '';
-  data.forEach((item, index) => {
-    const col = document.createElement('div');
-    col.className = 'col-md-4 mb-4';
-    const hargaDiskon = item.harga_diskon || item.harga; 
-    const hargaAsli = item.harga_asli || '';
-    col.innerHTML = `
-      <div class="card h-100 shadow-sm">
-        <img src="${item.gambar_url}" class="card-img-top" alt="${item.nama_produk}">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">${item.nama_produk} <span class="badge-promo">Promo</span></h5>
-          <p class="card-text flex-grow-1">${item.deskripsi}</p>
-          <p class="mb-2">
-            <span class="fw-bold">Rp ${hargaDiskon}</span>
-            ${hargaAsli ? `<span class="harga-coret ms-2">Rp ${hargaAsli}</span>` : ''}
-          </p>
-          <button class="btn btn-outline-primary btn-sm mb-2" onclick='tambahKeranjang(${JSON.stringify(item)})'>
-            <i class="bi bi-cart-plus"></i> Tambah
-          </button>
-          <a href="${item.link_wa}" class="btn btn-wa btn-sm" target="_blank">
-            <i class="bi bi-whatsapp"></i> Pesan Langsung
-          </a>
-        </div>
-      </div>`;
-    container.appendChild(col);
-  });
-}
-
-// Render Profil UMKM
-function renderProfil(data) {
-  const p = data[0];
-  document.getElementById('judul-utama').textContent = p.judul_utama || 'Produk UMKM Garut';
-  document.getElementById('deskripsi-utama').textContent = p.deskripsi || '';
-  document.getElementById('tentang-umkm').textContent = p.tentang || '';
-  document.getElementById('alamat-umkm').textContent = p.alamat || '';
-  document.getElementById('jam-operasional').textContent = p.jam_operasional || '';
-  document.getElementById('map-embed').src = `https://www.google.com/maps?q=${p.lokasi_maps}&output=embed`;
-  document.getElementById('link-wa').href = `https://wa.me/${p.no_wa}`;
-  document.getElementById('link-ig').href = p.link_ig;
-  document.getElementById('link-fb').href = p.link_fb;
-}
-
-// Slider dari Sheet
-fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetSlider}?key=${apiKey}`)
-  .then(res => res.json())
-  .then(data => {
-    const [header, ...rows] = data.values;
-    const urlIndex = header.indexOf('gambar_url');
-    const wrapper = document.getElementById('slider-images');
-    wrapper.innerHTML = '';
-    rows.forEach((row, i) => {
-      const img = row[urlIndex];
-      const div = document.createElement('div');
-      div.className = 'carousel-item' + (i === 0 ? ' active' : '');
-      div.innerHTML = `<img src="${img}" class="d-block w-100">`;
-      wrapper.appendChild(div);
-    });
-  });
-
-// Lokasi User
-if ('geolocation' in navigator) {
-  navigator.geolocation.getCurrentPosition(function(pos) {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=f52bc7068ca24d6e8545cd9b2b0c0e6e`)
-      .then(res => res.json())
-      .then(data => {
-        const lokasi = data.results[0].components;
-        const kec = lokasi.suburb || lokasi.village || lokasi.county || lokasi.town;
-        document.getElementById('lokasi-user').innerText = `Lokasi Anda: ${kec || 'Tidak Diketahui'}`;
-      })
-      .catch(() => document.getElementById('lokasi-user').innerText = 'Tidak dapat mendeteksi lokasi.');
-  });
-} else {
-  document.getElementById('lokasi-user').innerText = 'Browser tidak mendukung geolokasi.';
-}
-
-// Keranjang
-function tambahKeranjang(item) {
-  const existing = keranjang.find(p => p.nama_produk === item.nama_produk);
-  if (existing) existing.qty += 1;
-  else keranjang.push({ ...item, qty: 1 });
-  updateKeranjang();
-  showNotif();
-}
-
-function showNotif() {
-  const notif = document.getElementById('notif');
-  notif.style.display = 'block';
-  setTimeout(() => notif.style.display = 'none', 2000);
-}
-
-function updateKeranjang() {
-  const list = document.getElementById('keranjang-list');
-  list.innerHTML = '';
-  keranjang.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.className = 'list-group-item d-flex justify-content-between align-items-center';
-    li.innerHTML = `
-      ${item.nama_produk} (Rp ${item.harga || item.harga_diskon})
-      <div>
-        <button class="btn btn-sm btn-outline-secondary" onclick="ubahQty(${index}, -1)">-</button>
-        <span class="mx-2">${item.qty}</span>
-        <button class="btn btn-sm btn-outline-secondary" onclick="ubahQty(${index}, 1)">+</button>
-      </div>`;
-    list.appendChild(li);
-  });
-  document.getElementById('cart-count').textContent = keranjang.reduce((a, b) => a + b.qty, 0);
-  const link = 'https://wa.me/6281234567890?text=' + encodeURIComponent(
-    keranjang.map(p => `- ${p.nama_produk} (${p.harga || p.harga_diskon}) x${p.qty}`).join('\n')
-  );
-  document.getElementById('pesan-semua').href = link;
-}
-
-function ubahQty(index, delta) {
-  keranjang[index].qty += delta;
-  if (keranjang[index].qty <= 0) keranjang.splice(index, 1);
-  updateKeranjang();
-}
-
-// Mulai
-Promise.all([
-  fetchSheet(sheetProduk),
-  fetchSheet(sheetProfil)
-]).then(([produk, profil]) => {
-  renderProduk(produk);
-  renderProfil(profil);
-});
-</script>
-
-</body>
-</html>
+<script src="js/main.js"></script>
+</body></html>
