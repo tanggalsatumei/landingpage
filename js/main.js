@@ -1,4 +1,4 @@
-const sheetId="..."; const apiKey="..."; const sheet="Produk";
+const sheetId="1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w"; const apiKey="AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc"; const sheet="Produk";
 let keranjang=[];
 
 async function fetchProducts(){let r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheet}?key=${apiKey}`);let j=await r.json();
@@ -64,7 +64,7 @@ fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Slider?ke
 
 // geo
 if(navigator.geolocation) navigator.geolocation.getCurrentPosition(p=>{
-  fetch(`https://api.opencagedata.com/geocode/v1/json?q=${p.coords.latitude}+${p.coords.longitude}&key=...`)
+  fetch(`https://api.opencagedata.com/geocode/v1/json?q=${p.coords.latitude}+${p.coords.longitude}&key=f52bc7068ca24d6e8545cd9b2b0c0e6e`)
   .then(r=>r.json()).then(j=>{
     const c=j.results[0].components;
     document.getElementById('lokasi-user').innerText="Lokasi: "+(c.suburb||c.village||c.county||c.town);
