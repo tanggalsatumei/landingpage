@@ -1,25 +1,47 @@
 :root {
-  --primary-color: #007bff;
-  --background-color: #f8f9fa;
-  --dark-color: #343a40;
-  --light-color: #ffffff;
+  --primary-color: #4CAF50;
+  --button-color: #388e3c;
   --promo-color: #dc3545;
+  --background-color: #f8f9fa;
+  --text-color: #2e3b2e;
+  --heading-color: #1b3d1b;
+  --light-color: #ffffff;
+  --dark-color: #343a40;
+  --overlay-color: rgba(255, 255, 255, 0.85);
 }
 
+body.dark-mode {
+  --background-color: #1e1e1e;
+  --text-color: #f1f1f1;
+  --heading-color: #e8f5e9;
+  --primary-color: #81c784;
+  --button-color: #66bb6a;
+  --overlay-color: rgba(0, 0, 0, 0.7);
+  --light-color: #2c2c2c;
+  --dark-color: #111111;
+}
+
+/* === Base Elements === */
 body {
-  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: background 0.3s, color 0.3s;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading-color);
   font-weight: 600;
 }
 
 a {
+  color: var(--primary-color);
   text-decoration: none;
 }
 
+/* === Navbar === */
 .navbar {
   position: sticky;
   top: 0;
@@ -28,24 +50,24 @@ a {
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-.nav-location {
+body.dark-mode .navbar {
+  background-color: var(--light-color);
+}
+
+/* === Form & Location === */
+.nav-location,
+#searchBox {
   font-size: 0.875rem;
   color: #666;
 }
 
-#searchBox {
-  max-width: 200px;
-  font-size: 0.875rem;
-}
-
-.carousel-item img {
-  height: 320px;
-  object-fit: cover;
-}
-
+/* === Produk Card === */
 #produk-container .card {
   transition: transform 0.2s ease;
+  background-color: var(--light-color);
+  color: var(--text-color);
 }
+
 #produk-container .card:hover {
   transform: translateY(-5px);
 }
@@ -55,6 +77,7 @@ a {
   object-fit: cover;
 }
 
+/* === Promo & Harga === */
 .badge-promo {
   background-color: var(--promo-color);
   color: white;
@@ -68,6 +91,7 @@ a {
   color: gray;
 }
 
+/* === WhatsApp Button === */
 .btn-wa {
   background-color: #25D366;
   color: white;
@@ -77,6 +101,7 @@ a {
   opacity: 0.9;
 }
 
+/* === Floating Cart & Notif === */
 #floating-cart {
   position: fixed;
   bottom: 20px;
@@ -92,6 +117,7 @@ a {
   display: none;
 }
 
+/* === Footer === */
 footer {
   background: var(--dark-color);
   color: white;
@@ -101,10 +127,12 @@ footer {
 footer a {
   color: white;
 }
+
 footer a:hover {
   text-decoration: underline;
 }
 
+/* === Galeri === */
 #galeri-container img {
   height: 200px;
   object-fit: cover;
@@ -113,86 +141,33 @@ footer a:hover {
   margin-bottom: 15px;
   transition: transform 0.3s ease;
 }
+
 #galeri-container img:hover {
   transform: scale(1.05);
 }
 
-/* Testimoni */
+/* === Testimoni === */
 .testimoni-card {
-  background: white;
+  background: var(--light-color);
   border: 1px solid #eee;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  color: var(--text-color);
 }
+
 .testimoni-card h6 {
   font-weight: 600;
   color: var(--primary-color);
 }
+
 .testimoni-card p {
   font-style: italic;
   color: #444;
 }
 
-/* Dark Mode Toggle (opsional) */
-body.dark-mode {
-  background-color: #222;
-  color: #eee;
-}
-body.dark-mode .navbar {
-  background-color: #333;
-}
-body.dark-mode footer {
-  background-color: #111;
-}
-body.dark-mode .card {
-  background-color: #2c2c2c;
-  color: #eee;
-}
-body.dark-mode .testimoni-card {
-  background-color: #2c2c2c;
-}
-
-/* === Root Theme Variables === */
-:root {
-  --bg-color: #ffffff;
-  --text-color: #2e3b2e;
-  --heading-color: #1b3d1b;
-  --primary-color: #4CAF50;
-  --button-color: #388e3c;
-  --overlay-color: rgba(255, 255, 255, 0.85);
-}
-
-/* === Dark Mode Overrides === */
-body.dark-mode {
-  --bg-color: #1e1e1e;
-  --text-color: #f1f1f1;
-  --heading-color: #e8f5e9;
-  --primary-color: #81c784;
-  --button-color: #66bb6a;
-  --overlay-color: rgba(0, 0, 0, 0.7);
-}
-
-/* === Base Elements === */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  color: var(--heading-color);
-}
-
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
+/* === Buttons === */
 button, .btn {
   background-color: var(--button-color);
   color: #fff;
@@ -206,7 +181,7 @@ button:hover, .btn:hover {
   opacity: 0.9;
 }
 
-/* === Slider Section === */
+/* === Slider === */
 .hero-slider {
   position: relative;
   overflow: hidden;
@@ -253,7 +228,7 @@ button:hover, .btn:hover {
   margin-bottom: 1.5rem;
 }
 
-/* Responsive tweaks */
+/* === Responsive === */
 @media (max-width: 768px) {
   .text-section h1 {
     font-size: 2rem;
