@@ -2,53 +2,6 @@
 const sheetId = '1s5PwpQqnaqRJ7DeS8rVZ1KiK-eUr2CdpFP-Uvz54Z7w';
 const apiKey = 'AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc';
 
-async function renderProduk() {
-  const data = await fetchSheet('Produk');
-  const container = document.getElementById('produk-container');
-  if (!container) return;
-
-  container.innerHTML = '';
-  data.forEach(item => {
-    const col = document.createElement('div');
-    col.className = 'col-md-4 mb-4';
-
-    const hargaAsli = item.harga_asli ? `<span class="harga-coret me-2">Rp ${Number(item.harga_asli.replace(/\D/g, '')).toLocaleString('id-ID')}</span>` : '';
-    const hargaDiskon = item.harga_diskon ? `<strong class="text-danger">Rp ${Number(item.harga_diskon.replace(/\D/g, '')).toLocaleString('id-ID')}</strong>` : '';
-
-    col.innerHTML = `
-      <div class="card h-100 shadow-sm">
-        <img src="${item.gambar_url}" class="card-img-top" alt="${item.nama_produk}">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">const labelPromo = Number(item.harga_asli.replace(/\D/g, '')) > Number(item.harga_diskon.replace(/\D/g, '')) 
-  ? `<span class="badge badge-promo">Promo</span>` : '';
-${item.nama_produk}</h5>
-          <p class="card-text">${item.deskripsi}</p>
-          <div class="mt-auto">
-            <p class="mb-2">${hargaAsli}${hargaDiskon}</p>
-            <a href="${item.link_wa}" target="_blank" class="btn btn-success btn-sm w-100">Beli via WhatsApp</a>
-          </div>
-        </div>
-      </div>`;
-      
-    container.appendChild(col);
-  });
-}
-
-
-async function renderSlider() {
-  const data = await fetchSheet('Slider');
-  const container = document.getElementById('slider-images');
-  if (!container) return;
-
-  container.innerHTML = '';
-  data.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'carousel-item' + (i === 0 ? ' active' : '');
-    div.innerHTML = `<img src="${item.gambar_url}" class="d-block w-100" alt="Slide ${i + 1}">`;
-    container.appendChild(div);
-  });
-}
-
 // Helper fetch
 async function fetchSheet(sheetName) {
   const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`);
@@ -61,6 +14,101 @@ async function fetchSheet(sheetName) {
   return rows.map(row => Object.fromEntries(header.map((h, i) => [h, row[i] || ''])));
 }
 
+// Slider
+async function renderSlider() {
+  const data = await fetchSheet('Slider');
+  const container = document.getElementById('slider-images');
+  if (!container) return;
+  container.innerHTML = '';
+  data.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'carousel-item' + (index === 0 ? ' active' : '');
+    div.innerHTML = `<img src="${item.gambar_url}" class="d-block w-100" alt="Slide ${index + 1}">`;
+    container.appendChild(div);
+  });
+}
+
+// Produk dan Keranjang
+let keranjang = [];
+
+async function renderProduk() {
+  const data = await fetchSheet('Produk');
+  const container = document.getElementById('produk-container');
+  const highlight = document.getElementById('highlight-produk');
+  if (!container || !highlight) return;
+
+  container.innerHTML = '';
+  highlight.innerHTML = '';
+
+  data.forEach((item, index) => {
+    const card = `
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+          <img src="${item.gambar_url}" class="card-img-top" alt="${item.nama_produk}">
+          <div class="card-body">
+            <h5 class="card-title">${item.nama_produk}</h5>
+            <p class="card-text">${item.deskripsi}</p>
+            <p>
+              <span class="harga-coret">Rp${item.harga_asli}</span>
+              <strong class="text-danger">Rp${item.harga_diskon}</strong>
+            </p>
+            <button class="btn btn-primary w-100" onclick='tambahKeranjang(${JSON.stringify(item)})'>Tambah ke Keranjang</button>
+          </div>
+        </div>
+      </div>`;
+    container.innerHTML += card;
+
+    if (index === 0) {
+      highlight.innerHTML = card;
+    }
+  });
+}
+
+function tambahKeranjang(item) {
+  keranjang.push(item);
+  document.getElementById('cart-count').textContent = keranjang.length;
+  document.getElementById('notif').style.display = 'block';
+  setTimeout(() => document.getElementById('notif').style.display = 'none', 2000);
+  renderKeranjang();
+}
+
+function renderKeranjang() {
+  const list = document.getElementById('keranjang-list');
+  if (!list) return;
+  list.innerHTML = '';
+  keranjang.forEach(item => {
+    list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+      ${item.nama_produk} <span>Rp${item.harga_diskon}</span>
+    </li>`;
+  });
+}
+
+// Checkout via WhatsApp
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('checkout-form');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nama = document.getElementById('nama-pemesan').value;
+      const alamat = document.getElementById('alamat-pemesan').value;
+
+      if (!nama || !alamat || keranjang.length === 0) {
+        alert("Lengkapi data dan isi keranjang terlebih dahulu.");
+        return;
+      }
+
+      let pesan = `Halo, saya ${nama} ingin memesan:\n`;
+      keranjang.forEach(item => {
+        pesan += `- ${item.nama_produk} (Rp${item.harga_diskon})\n`;
+      });
+      pesan += `\nAlamat: ${alamat}`;
+
+      const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(pesan)}`;
+      window.open(waUrl, '_blank');
+    });
+  }
+});
+
 // Galeri
 async function renderGaleri() {
   const data = await fetchSheet('Galeri');
@@ -70,7 +118,7 @@ async function renderGaleri() {
   data.forEach(item => {
     const col = document.createElement('div');
     col.className = 'col-md-3 mb-3';
-    col.innerHTML = `<img src="${item.gambar_url}" class="img-fluid rounded shadow-sm" alt="Galeri UMKM">`;
+    col.innerHTML = `<img src="${item.gambar_url}" class="img-fluid rounded shadow-sm" alt="${item.caption}">`;
     container.appendChild(col);
   });
 }
@@ -87,7 +135,7 @@ async function renderTestimoni() {
     col.innerHTML = `
       <div class="card shadow-sm">
         <div class="card-body">
-          <p class="card-text">"${item.testimoni}"</p>
+          <p class="card-text">"${item.isi}"</p>
           <h6 class="card-subtitle text-muted">— ${item.nama}</h6>
         </div>
       </div>`;
@@ -95,7 +143,7 @@ async function renderTestimoni() {
   });
 }
 
-// Mengapa Memilih Kami
+// Keunggulan
 async function renderKeunggulan() {
   const data = await fetchSheet('Keunggulan');
   const container = document.getElementById('keunggulan-list');
@@ -112,7 +160,40 @@ async function renderKeunggulan() {
   });
 }
 
-// Dark Mode Toggle
+// Layanan
+async function renderLayanan() {
+  const data = await fetchSheet('Layanan');
+  const container = document.getElementById('layanan-container');
+  if (!container) return;
+  container.innerHTML = '';
+  data.forEach(item => {
+    const col = document.createElement('div');
+    col.className = 'col-md-4 text-center mb-4';
+    col.innerHTML = `
+      <i class="bi ${item.icon} display-4 text-success"></i>
+      <h5 class="mt-3">${item.judul}</h5>
+      <p>${item.deskripsi}</p>`;
+    container.appendChild(col);
+  });
+}
+
+// Profil UMKM
+async function renderProfil() {
+  const data = await fetchSheet('ProfilUMKM');
+  if (!data.length) return;
+
+  const profil = data[0];
+  document.getElementById('tentang-title').textContent = profil.judul_utama;
+  document.getElementById('tentang-umkm').textContent = profil.tentang;
+  document.getElementById('alamat-umkm').textContent = profil.alamat;
+  document.getElementById('jam-operasional').textContent = profil.jam_operasional;
+  document.getElementById('link-wa').href = `https://wa.me/${profil.no_wa}`;
+  document.getElementById('link-ig').href = profil.link_ig;
+  document.getElementById('link-fb').href = profil.link_fb;
+  document.getElementById('map-embed').src = `https://maps.google.com/maps?q=${profil.lokasi_maps}&z=15&output=embed`;
+}
+
+// Dark Mode
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
   const isDark = document.body.classList.contains('dark-mode');
@@ -127,12 +208,16 @@ function loadDarkMode() {
 // Inisialisasi Semua
 function inisialisasi() {
   loadDarkMode();
-  renderSlider();      // Tambahkan
-  renderProduk();      // Tambahkan
+  renderSlider();
+  renderProduk();
   renderGaleri();
   renderTestimoni();
   renderKeunggulan();
+  renderProfil();
+  renderLayanan();
 
-  const darkToggle = document.getElementById('toggle-darkmode');
-  if (darkToggle) darkToggle.addEventListener('click', toggleDarkMode);
+  const toggleBtn = document.getElementById('toggle-darkmode');
+  if (toggleBtn) toggleBtn.addEventListener('click', toggleDarkMode);
 }
+
+document.addEventListener('DOMContentLoaded', inisialisasi);
