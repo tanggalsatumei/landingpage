@@ -17,30 +17,34 @@ async function fetchSheet(sheetName) {
 // Slider
 async function renderSlider() {
   const data = await fetchSheet('Slider');
-  const container = document.querySelector('.hero-slider');
+  const container = document.getElementById('slider-inner');
   if (!container) return;
+
   container.innerHTML = '';
-  data.forEach(item => {
+
+  data.forEach((item, index) => {
     const slide = document.createElement('div');
-    slide.className = 'slider-item';
-    slide.style.backgroundImage = `url('${item.gambar_url}')`;
+    slide.className = `carousel-item${index === 0 ? ' active' : ''}`;
     slide.innerHTML = `
-      <div class="overlay">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-md-6 d-none d-md-block"></div>
-            <div class="col-md-6 text-section">
-              <span class="small-text">${item.keterangan_singkat || ''}</span>
-              <h1>${item.judul || ''}</h1>
-              <p>${item.deskripsi || ''}</p>
-              <a href="${item.link || '#'}" class="btn">Shop Now</a>
+      <div class="slider-item" style="background-image: url('${item.gambar_url || 'img/fallback.jpg'}');">
+        <div class="overlay">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-md-6 d-none d-md-block"></div>
+              <div class="col-md-6 text-section">
+                <span class="small-text">${item.judul || ''}</span>
+                <h1>${item.deskripsi || ''}</h1>
+                ${item.tombol_text ? `<a href="${item.tombol_link || '#'}" class="btn">${item.tombol_text}</a>` : ''}
+              </div>
             </div>
           </div>
         </div>
-      </div>`;
+      </div>
+    `;
     container.appendChild(slide);
   });
 }
+
 
 // Produk dan Keranjang
 let keranjang = [];
