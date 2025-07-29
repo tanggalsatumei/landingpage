@@ -4,19 +4,14 @@ const apiKey = 'AIzaSyAoLKn-ravRsZm2XUW_jZHlLpHhiz3MFYc';
 
 // Helper fetch
 async function fetchSheet(sheetName) {
-  try {
-    const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`);
-    const data = await res.json();
-    if (!data.values || data.values.length === 0) {
-      console.warn(`Sheet "${sheetName}" kosong atau tidak ditemukan.`);
-      return [];
-    }
-    const [header, ...rows] = data.values;
-    return rows.map(row => Object.fromEntries(header.map((h, i) => [h, row[i] || ''])));
-  } catch (err) {
-    console.error(`Gagal mengambil data dari sheet: ${sheetName}`, err);
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`);
+  const data = await res.json();
+  if (!data || !data.values || data.values.length < 2) {
+    console.warn(`Sheet "${sheetName}" kosong atau tidak ditemukan.`);
     return [];
   }
+  const [header, ...rows] = data.values;
+  return rows.map(row => Object.fromEntries(header.map((h, i) => [h, row[i] || ''])));
 }
 
 // Galeri
@@ -70,11 +65,26 @@ async function renderKeunggulan() {
   });
 }
 
+// Dark Mode Toggle
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  localStorage.setItem('dark-mode', isDark);
+}
+
+function loadDarkMode() {
+  const isDark = localStorage.getItem('dark-mode') === 'true';
+  if (isDark) document.body.classList.add('dark-mode');
+}
+
 // Inisialisasi Semua
 function inisialisasi() {
+  loadDarkMode();
   renderGaleri();
   renderTestimoni();
   renderKeunggulan();
+  const darkToggle = document.getElementById('darkToggle');
+  if (darkToggle) darkToggle.addEventListener('click', toggleDarkMode);
 }
 
 document.addEventListener('DOMContentLoaded', inisialisasi);
